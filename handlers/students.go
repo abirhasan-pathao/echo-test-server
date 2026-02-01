@@ -100,6 +100,10 @@ func UpdateStudent(c *echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
 	}
 
+	if err := c.Validate(&updatedData); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+
 	student.Name = updatedData.Name
 	student.Email = updatedData.Email
 	student.Age = updatedData.Age
