@@ -20,6 +20,10 @@ func CreateStudent(c *echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
 	}
 
+	if err := c.Validate(&student); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+
 	var existingStudent models.Student
 	if err := db.DB.Where("email = ?", student.Email).First(&existingStudent).Error; err == nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Student with this emailalready exists"})
