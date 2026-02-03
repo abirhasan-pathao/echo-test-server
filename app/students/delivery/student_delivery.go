@@ -5,6 +5,7 @@ import (
 	"echo-server/app/students/usecase"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v5"
 )
@@ -29,6 +30,9 @@ func (ctrl *StudentController) CreateStudent(c *echo.Context) error {
 
 	err := ctrl.studentUsecase.CreateStudent(&student)
 	if err != nil {
+		if strings.Contains(err.Error(), "duplicate key value") {
+			return c.JSON(http.StatusConflict, map[string]string{"error": "Email already exists"})
+		}
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
@@ -72,6 +76,9 @@ func (ctrl *StudentController) UpdateStudent(c *echo.Context) error {
 
 	student, err := ctrl.studentUsecase.UpdateStudent(uint(id), &updatedStudent)
 	if err != nil {
+		if strings.Contains(err.Error(), "duplicate key value") {
+			return c.JSON(http.StatusConflict, map[string]string{"error": "Email already exists"})
+		}
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
