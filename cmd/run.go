@@ -5,6 +5,7 @@ import (
 	"echo-server/app/students/repository"
 	"echo-server/app/students/usecase"
 	"echo-server/app/utils"
+	"echo-server/config"
 	"echo-server/infrastructure/db"
 	"log"
 	"net/http"
@@ -19,7 +20,12 @@ var startServerCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Start the Echo Server",
 	Run: func(cmd *cobra.Command, args []string) {
-		dbConn := db.NewPostgresDB()
+		config, err := config.LoadConfig()
+		if err != nil {
+			log.Fatal("Failed to load config: ", err)
+		}
+
+		dbConn := db.NewPostgresDB(config.Database)
 		studentRepo := repository.NewStudentRepository(dbConn)
 		studentUsecase := usecase.NewStudentUsecase(studentRepo)
 		studentController := delivery.NewStudentController(studentUsecase)
@@ -47,4 +53,3 @@ var startServerCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(startServerCmd)
 }
-
