@@ -1,34 +1,55 @@
 package config
 
 import (
-	"os"
+	"fmt"
+	"strings"
 
-	"gopkg.in/yaml.v3"
+	"github.com/joho/godotenv"
+	"github.com/spf13/viper"
 )
 
 type Config struct {
-	Database DatabaseConfig `yaml:"database"`
+	Database    DatabaseConfig    `mapstructure:"database"`
+	Environment EnvironmentConfig `mapstructure:"environment"`
+}
+
+type EnvironmentConfig struct {
+	Env  string `mapstructure:"env"`
+	Port string `mapstructure:"port"`
 }
 
 type DatabaseConfig struct {
-	Host     string `yaml:"host"`
-	User     string `yaml:"username"`
-	Password string `yaml:"password"`
-	DBName   string `yaml:"name"`
-	Port     int    `yaml:"port"`
-	SSLMode  string `yaml:"sslmode"`
+	Host     string `mapstructure:"host"`
+	User     string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
+	DBName   string `mapstructure:"name"`
+	Port     int    `mapstructure:"port"`
+	SSLMode  string `mapstructure:"sslmode"`
 }
 
 func LoadConfig() (*Config, error) {
-	data, err := os.ReadFile("config/config.yaml")
-	if err != nil {
-		return nil, err
+	_ = godotenv.Load()
+
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+
+	viper.AutomaticEnv()
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	viper.SetDefault("environment.env", "")
+	viper.SetDefault("environment.port", "")
+
+	if err := viper.ReadInConfig(); err != nil {
+		return nil, fmt.Errorf("error reading config file: %w", err)
 	}
 
 	var config Config
-	err = yaml.Unmarshal(data, &config)
-	if err != nil {
-		return nil, err
+	if err := viper.Unmarshal(&config); err != nil {
+		return nil, fmt.Errorf("unable to decode into struct: %w", err)
 	}
+	fmt.Println(config)
+
 	return &config, nil
+
 }

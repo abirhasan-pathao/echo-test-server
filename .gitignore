@@ -29,8 +29,8 @@ go.work.sum
 .env
 .env.local
 .env.*.local
-config/**/*.yaml
-!config/**/*example.yaml
+**/*.yaml
+!**/*example.yaml
 
 # OS files
 .DS_Store

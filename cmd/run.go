@@ -45,8 +45,8 @@ var startServerCmd = &cobra.Command{
 		e.PUT("/students/:id", studentController.UpdateStudent)
 		e.DELETE("/students/:id", studentController.DeleteStudent)
 
-		log.Println("Starting server on :8080")
-		log.Fatal(e.Start(":8080"))
+		log.Println("Starting " + config.Environment.Env + " server on :" + config.Environment.Port)
+		log.Fatal(e.Start(":" + config.Environment.Port))
 	},
 }
 
