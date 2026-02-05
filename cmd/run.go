@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	cookiedelivery "echo-server/app/cookie/delivery"
+	cookieusecase "echo-server/app/cookie/usecase"
 	"echo-server/app/students/delivery"
 	"echo-server/app/students/repository"
 	"echo-server/app/students/usecase"
@@ -30,6 +32,9 @@ var startServerCmd = &cobra.Command{
 		studentUsecase := usecase.NewStudentUsecase(studentRepo)
 		studentController := delivery.NewStudentController(studentUsecase)
 
+		cookieUsecase := cookieusecase.NewCookieUsecase()
+		cookieController := cookiedelivery.NewCookieController(cookieUsecase)
+
 		e := echo.New()
 		e.Use(middleware.RequestLogger())
 
@@ -45,6 +50,9 @@ var startServerCmd = &cobra.Command{
 		e.PUT("/students/:id", studentController.UpdateStudent)
 		e.DELETE("/students/:id", studentController.DeleteStudent)
 		e.GET("/students/average-age", studentController.GetAverageAge)
+
+		e.GET("/cookie", cookieController.GetCookie)
+		e.GET("/milk", cookieController.GetMilk)
 
 		log.Println("Starting " + config.Environment.Env + " server on :" + config.Environment.Port)
 		log.Fatal(e.Start(":" + config.Environment.Port))

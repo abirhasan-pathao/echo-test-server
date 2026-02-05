@@ -14,8 +14,9 @@ type Config struct {
 }
 
 type EnvironmentConfig struct {
-	Env  string `mapstructure:"env"`
-	Port string `mapstructure:"port"`
+	Env       string `mapstructure:"env"`
+	Port      string `mapstructure:"port"`
+	JWTSecret string `mapstructure:"jwt_secret"`
 }
 
 type DatabaseConfig struct {
@@ -39,6 +40,7 @@ func LoadConfig() (*Config, error) {
 
 	viper.SetDefault("environment.env", "")
 	viper.SetDefault("environment.port", "")
+	viper.SetDefault("environment.jwt_secret", "")
 
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, fmt.Errorf("error reading config file: %w", err)
@@ -48,7 +50,6 @@ func LoadConfig() (*Config, error) {
 	if err := viper.Unmarshal(&config); err != nil {
 		return nil, fmt.Errorf("unable to decode into struct: %w", err)
 	}
-	fmt.Println(config)
 
 	return &config, nil
 
