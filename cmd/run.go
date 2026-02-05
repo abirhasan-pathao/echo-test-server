@@ -6,13 +6,11 @@ import (
 	"echo-server/app/students/delivery"
 	"echo-server/app/students/repository"
 	"echo-server/app/students/usecase"
-	"echo-server/app/utils"
 	"echo-server/config"
 	"echo-server/infrastructure/db"
 	"log"
 	"net/http"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
 	"github.com/spf13/cobra"
@@ -38,7 +36,7 @@ var startServerCmd = &cobra.Command{
 		e := echo.New()
 		e.Use(middleware.RequestLogger())
 
-		e.Validator = &utils.CustomValidator{Validator: validator.New()}
+		// e.Validator = &utils.CustomValidator{Validator: validator.New()}
 
 		e.GET("/", func(c *echo.Context) error {
 			return c.JSON(http.StatusOK, "Server is Running...")

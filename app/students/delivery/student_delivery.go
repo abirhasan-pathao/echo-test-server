@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gookit/validate"
 	"github.com/labstack/echo/v5"
 )
 
@@ -24,8 +25,13 @@ func (ctrl *StudentController) CreateStudent(c *echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
 	}
 
-	if err := c.Validate(&student); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	v := validate.Struct(student)
+	v.StopOnError = false
+	if !v.Validate() {
+		return c.JSON(http.StatusBadRequest, map[string]any{
+			"message": "validation failed",
+			"errors":  v.Errors.All(),
+		})
 	}
 
 	err := ctrl.studentUsecase.CreateStudent(&student)
@@ -70,8 +76,13 @@ func (ctrl *StudentController) UpdateStudent(c *echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
 	}
 
-	if err := c.Validate(&updatedStudent); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	v := validate.Struct(updatedStudent)
+	v.StopOnError = false
+	if !v.Validate() {
+		return c.JSON(http.StatusBadRequest, map[string]any{
+			"message": "validation failed",
+			"errors":  v.Errors.All(),
+		})
 	}
 
 	student, err := ctrl.studentUsecase.UpdateStudent(uint(id), &updatedStudent)
