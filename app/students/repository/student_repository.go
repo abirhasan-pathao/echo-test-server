@@ -50,3 +50,9 @@ func (r *StudentRepository) UpdateStudent(id uint, updatedStudent *model.Student
 func (r *StudentRepository) DeleteStudent(id uint) error {
 	return r.db.Delete(&model.Student{}, id).Error
 }
+
+func (r *StudentRepository) AvarageAge() (float64, error) {
+	var avgAge float64
+	err := r.db.Model(&model.Student{}).Select("AVG(age)").Scan(&avgAge).Error
+	return avgAge, err
+}

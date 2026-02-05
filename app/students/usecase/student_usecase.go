@@ -8,6 +8,7 @@ type StudentRepository interface {
 	GetAllStudents() ([]model.Student, error)
 	UpdateStudent(id uint, updatedStudent *model.Student) (*model.Student, error)
 	DeleteStudent(id uint) error
+	AvarageAge() (float64, error)
 }
 
 type StudentUsecase struct {
@@ -39,17 +40,5 @@ func (u *StudentUsecase) DeleteStudent(id uint) error {
 }
 
 func (u *StudentUsecase) AvarageAge() (float64, error) {
-	students, err := u.studentRepo.GetAllStudents()
-	if err != nil {
-		return -1, err
-	}
-	if len(students) == 0 {
-		return 0, nil
-	}
-	var totalAge int
-	for _, student := range students {
-		totalAge += student.Age
-	}
-	average := float64(totalAge) / float64(len(students))
-	return average, nil
+	return u.studentRepo.AvarageAge()
 }
