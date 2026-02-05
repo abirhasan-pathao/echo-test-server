@@ -98,3 +98,14 @@ func (ctrl *StudentController) DeleteStudent(c *echo.Context) error {
 
 	return c.NoContent(http.StatusNoContent)
 }
+
+func (ctrl *StudentController) GetAverageAge(c *echo.Context) error {
+	averageAge, err := ctrl.studentUsecase.AvarageAge()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	if averageAge == -1 {
+		return c.JSON(http.StatusNoContent, map[string]string{"error": "No students found"})
+	}
+	return c.JSON(http.StatusOK, map[string]float64{"average_age": averageAge})
+}

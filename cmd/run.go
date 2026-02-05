@@ -44,6 +44,7 @@ var startServerCmd = &cobra.Command{
 		e.GET("/students", studentController.GetAllStudents)
 		e.PUT("/students/:id", studentController.UpdateStudent)
 		e.DELETE("/students/:id", studentController.DeleteStudent)
+		e.GET("/students/average-age", studentController.GetAverageAge)
 
 		log.Println("Starting " + config.Environment.Env + " server on :" + config.Environment.Port)
 		log.Fatal(e.Start(":" + config.Environment.Port))
