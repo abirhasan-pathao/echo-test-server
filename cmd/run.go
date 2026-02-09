@@ -6,7 +6,7 @@ import (
 	"echo-server/app/students/delivery"
 	"echo-server/app/students/repository"
 	"echo-server/app/students/usecase"
-	"echo-server/app/utils/validation"
+	"echo-server/app/validator"
 	"echo-server/config"
 	"echo-server/infrastructure/db"
 	"log"
@@ -37,7 +37,8 @@ var startServerCmd = &cobra.Command{
 		e := echo.New()
 		e.Use(middleware.RequestLogger())
 
-		validation.AddValidator()
+		// validation.AddValidator()
+		e.Validator = validator.New()
 
 		e.GET("/", func(c *echo.Context) error {
 			return c.JSON(http.StatusOK, "Server is Running...")
