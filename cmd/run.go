@@ -6,13 +6,12 @@ import (
 	"echo-server/app/students/delivery"
 	"echo-server/app/students/repository"
 	"echo-server/app/students/usecase"
+	"echo-server/app/utils/validation"
 	"echo-server/config"
 	"echo-server/infrastructure/db"
 	"log"
 	"net/http"
-	"regexp"
 
-	"github.com/gookit/validate"
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
 	"github.com/spf13/cobra"
@@ -38,17 +37,7 @@ var startServerCmd = &cobra.Command{
 		e := echo.New()
 		e.Use(middleware.RequestLogger())
 
-		// e.Validator = &utils.CustomValidator{Validator: validator.New()}
-
-		// Register the custom validator globally
-		validate.AddValidator("alphadotspace", func(val any) bool {
-			namePattern := regexp.MustCompile(`^[A-Za-z. ]+$`)
-			str, ok := val.(string)
-			if !ok {
-				return false
-			}
-			return namePattern.MatchString(str)
-		})
+		validation.AddValidator()
 
 		e.GET("/", func(c *echo.Context) error {
 			return c.JSON(http.StatusOK, "Server is Running...")

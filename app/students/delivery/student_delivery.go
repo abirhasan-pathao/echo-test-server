@@ -2,7 +2,6 @@ package delivery
 
 import (
 	"echo-server/app/students/model"
-	"echo-server/app/students/usecase"
 	"net/http"
 	"strconv"
 	"strings"
@@ -11,11 +10,20 @@ import (
 	"github.com/labstack/echo/v5"
 )
 
-type StudentController struct {
-	studentUsecase *usecase.StudentUsecase
+type StuddentUsecase interface {
+	CreateStudent(student *model.Student) error
+	GetStudentByID(id uint) (*model.Student, error)
+	GetAllStudents() ([]model.Student, error)
+	UpdateStudent(id uint, updatedStudent *model.Student) (*model.Student, error)
+	DeleteStudent(id uint) error
+	AvarageAge() (float64, error)
 }
 
-func NewStudentController(studentUsecase *usecase.StudentUsecase) *StudentController {
+type StudentController struct {
+	studentUsecase StuddentUsecase
+}
+
+func NewStudentController(studentUsecase StuddentUsecase) *StudentController {
 	return &StudentController{studentUsecase: studentUsecase}
 }
 
@@ -52,7 +60,10 @@ func (ctrl *StudentController) GetStudentByID(c *echo.Context) error {
 	}
 	student, err := ctrl.studentUsecase.GetStudentByID(uint(id))
 	if err != nil {
-		return c.JSON(http.StatusNotFound, map[string]string{"error": "Student not found"})
+		if strings.Contains(err.Error(), "record not found") {
+			return c.JSON(http.StatusNotFound, map[string]string{"error": "Student not found"})
+		}
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 	return c.JSON(http.StatusOK, student)
 }
