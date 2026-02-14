@@ -4,6 +4,7 @@ import (
 	cookiedelivery "echo-server/app/cookie/delivery"
 	cookieusecase "echo-server/app/cookie/usecase"
 	"echo-server/app/students/delivery"
+	"echo-server/app/students/model"
 	"echo-server/app/students/repository"
 	"echo-server/app/students/usecase"
 	"echo-server/app/utils/validation"
@@ -27,6 +28,8 @@ var startServerCmd = &cobra.Command{
 		}
 
 		dbConn := db.NewPostgresDB(config.Database)
+		dbConn.AutoMigrate(&model.Student{})
+
 		studentRepo := repository.NewStudentRepository(dbConn)
 		studentUsecase := usecase.NewStudentUsecase(studentRepo)
 		studentController := delivery.NewStudentController(studentUsecase)

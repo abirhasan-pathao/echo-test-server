@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: new_user
+      POSTGRES_PASSWORD: new_password
+      POSTGRES_DB: new_database
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U new_user -d new_database"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+    
+
+  app:
+    build: .
+    container_name: echo_server
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: new_user
+      DATABASE_PASSWORD: new_password
+      DATABASE_NAME: new_database
+      DATABASE_SSLMODE: disable
+      ENVIRONMENT_PORT: 8080
+      ENVIRONMENT_ENV: docker
+      ENVIRONMENT_JWT_SECRET: mysecret
+
+volumes:
+  postgres_data:
