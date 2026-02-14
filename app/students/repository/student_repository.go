@@ -11,22 +11,26 @@ type StudentRepository struct {
 }
 
 func NewStudentRepository(db *gorm.DB) *StudentRepository {
+
 	return &StudentRepository{db: db}
 }
 
 func (r *StudentRepository) CreateStudent(student *model.Student) error {
+
 	return r.db.Create(student).Error
 }
 
 func (r *StudentRepository) GetStudentByID(id uint) (*model.Student, error) {
 	var student model.Student
 	err := r.db.First(&student, id).Error
+
 	return &student, err
 }
 
 func (r *StudentRepository) GetAllStudents() ([]model.Student, error) {
 	var students []model.Student
 	err := r.db.Find(&students).Error
+
 	return students, err
 }
 
@@ -48,11 +52,13 @@ func (r *StudentRepository) UpdateStudent(id uint, updatedStudent *model.Student
 }
 
 func (r *StudentRepository) DeleteStudent(id uint) error {
+
 	return r.db.Delete(&model.Student{}, id).Error
 }
 
 func (r *StudentRepository) AvarageAge() (float64, error) {
 	var avgAge float64
 	err := r.db.Model(&model.Student{}).Select("AVG(age)").Scan(&avgAge).Error
+
 	return avgAge, err
 }

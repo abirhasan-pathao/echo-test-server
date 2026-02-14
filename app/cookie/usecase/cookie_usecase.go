@@ -7,6 +7,7 @@ import (
 type CookieUsecase struct{}
 
 func NewCookieUsecase() *CookieUsecase {
+
 	return &CookieUsecase{}
 }
 
@@ -15,5 +16,6 @@ func (u *CookieUsecase) GetCookie() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return token, err
 }

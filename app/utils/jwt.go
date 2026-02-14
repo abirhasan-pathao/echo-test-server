@@ -29,6 +29,7 @@ func GenerateJWT() (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
 	return token.SignedString(jwtSecret)
 }
 
@@ -43,5 +44,6 @@ func ValidateJWT(tokenString string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+
 	return token.Valid, nil
 }

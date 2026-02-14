@@ -17,5 +17,6 @@ func NewPostgresDB(config config.DatabaseConfig) *gorm.DB {
 		log.Fatal("failed to connect to DB: ", err)
 	}
 	log.Printf("Database connected - %s:%d/%s/%s", config.Host, config.Port, config.DBName, config.User)
+
 	return database
 }

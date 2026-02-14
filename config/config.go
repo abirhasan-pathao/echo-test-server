@@ -54,5 +54,4 @@ func LoadConfig() (*Config, error) {
 	// fmt.Printf("Config loaded: %+v\n", config)
 
 	return &config, nil
-
 }

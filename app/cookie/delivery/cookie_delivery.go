@@ -13,6 +13,7 @@ type CookieController struct {
 }
 
 func NewCookieController(cookieUsecase *usecase.CookieUsecase) *CookieController {
+
 	return &CookieController{cookieUsecase: cookieUsecase}
 }
 
@@ -36,8 +37,8 @@ func (ctrl *CookieController) GetCookie(c *echo.Context) error {
 	cookie.Path = "/"
 	cookie.HttpOnly = true
 	c.SetCookie(cookie)
-	return c.JSON(http.StatusOK, map[string]string{"message": "Here is your cookie! Go get some milk!"})
 
+	return c.JSON(http.StatusOK, map[string]string{"message": "Here is your cookie! Go get some milk!"})
 }
 
 func (ctrl *CookieController) GetMilk(c *echo.Context) error {
@@ -49,5 +50,6 @@ func (ctrl *CookieController) GetMilk(c *echo.Context) error {
 	if !isValid || err != nil {
 		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Your cookie expired, go get new cookie"})
 	}
+
 	return c.JSON(http.StatusOK, map[string]string{"message": "Here is your milk! Enjoy!"})
 }

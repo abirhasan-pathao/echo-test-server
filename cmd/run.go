@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	cookiedelivery "echo-server/app/cookie/delivery"
 	cookieusecase "echo-server/app/cookie/usecase"
 	"echo-server/app/students/delivery"
@@ -12,6 +13,10 @@ import (
 	"echo-server/infrastructure/db"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
@@ -56,8 +61,39 @@ var startServerCmd = &cobra.Command{
 		e.GET("/cookie", cookieController.GetCookie)
 		e.GET("/milk", cookieController.GetMilk)
 
-		log.Println("Starting " + config.Environment.Env + " server on :" + config.Environment.Port)
-		log.Fatal(e.Start(":" + config.Environment.Port))
+		srv := &http.Server{
+			Addr:    ":" + config.Environment.Port,
+			Handler: e,
+		}
+
+		go func() {
+			log.Println("Starting " + config.Environment.Env + " server on :" + config.Environment.Port)
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Fatalf("Server error: %v", err)
+			}
+		}()
+
+		quit := make(chan os.Signal, 1)
+		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+		<-quit
+
+		log.Println("Shutting down server...")
+
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+		if err := srv.Shutdown(ctx); err != nil {
+			log.Fatalf("Server forced to shutdown: %v", err)
+		}
+
+		sqlDB, err := dbConn.DB()
+		if err == nil {
+			sqlDB.Close()
+			log.Println("Database connection closed")
+		}
+
+		log.Println("Server exited gracefully")
+
 	},
 }
 

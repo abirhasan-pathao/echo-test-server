@@ -16,29 +16,36 @@ type StudentUsecase struct {
 }
 
 func NewStudentUsecase(studentRepo StudentRepository) *StudentUsecase {
+
 	return &StudentUsecase{studentRepo: studentRepo}
 }
 
 func (u *StudentUsecase) CreateStudent(student *model.Student) error {
+
 	return u.studentRepo.CreateStudent(student)
 }
 
 func (u *StudentUsecase) GetStudentByID(id uint) (*model.Student, error) {
+
 	return u.studentRepo.GetStudentByID(id)
 }
 
 func (u *StudentUsecase) GetAllStudents() ([]model.Student, error) {
+
 	return u.studentRepo.GetAllStudents()
 }
 
 func (u *StudentUsecase) UpdateStudent(id uint, updatedStudent *model.Student) (*model.Student, error) {
+
 	return u.studentRepo.UpdateStudent(id, updatedStudent)
 }
 
 func (u *StudentUsecase) DeleteStudent(id uint) error {
+
 	return u.studentRepo.DeleteStudent(id)
 }
 
 func (u *StudentUsecase) AvarageAge() (float64, error) {
+
 	return u.studentRepo.AvarageAge()
 }
