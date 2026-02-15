@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"echo-server/app/students/model"
 
 	"gorm.io/gorm"
@@ -57,8 +58,12 @@ func (r *StudentRepository) DeleteStudent(id uint) error {
 }
 
 func (r *StudentRepository) AvarageAge() (float64, error) {
-	var avgAge float64
+	var avgAge sql.NullFloat64
 	err := r.db.Model(&model.Student{}).Select("AVG(age)").Scan(&avgAge).Error
 
-	return avgAge, err
+	if avgAge.Valid {
+		return avgAge.Float64, err
+	}
+	return 0, err
+
 }
