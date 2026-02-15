@@ -61,6 +61,11 @@ var startServerCmd = &cobra.Command{
 		e.GET("/cookie", cookieController.GetCookie)
 		e.GET("/milk", cookieController.GetMilk)
 
+		e.GET("/grace-me", func(c *echo.Context) error {
+			time.Sleep(5 * time.Second)
+			return c.JSON(http.StatusOK, "You are so graceful to wait for 5 seconds!")
+		})
+
 		srv := &http.Server{
 			Addr:    ":" + config.Environment.Port,
 			Handler: e,
