@@ -2,11 +2,24 @@ package repository
 
 import (
 	"echo-server/app/students/model"
+	"fmt"
 	"math"
+	"os"
 	"testing"
 )
 
-const dsn = "host=localhost user=postgres password=postgres dbname=testdb port=5434 sslmode=disable"
+var dsn string
+
+func init() {
+	dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+		os.Getenv("DATABASE_HOST"),
+		os.Getenv("DATABASE_USERNAME"),
+		os.Getenv("DATABASE_PASSWORD"),
+		os.Getenv("DATABASE_NAME"),
+		os.Getenv("DATABASE_PORT"),
+		os.Getenv("DATABASE_SSLMODE"),
+	)
+}
 
 func Test_CreateStudent(t *testing.T) {
 	tests := []struct {

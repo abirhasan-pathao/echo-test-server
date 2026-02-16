@@ -16,8 +16,6 @@ services:
       timeout: 5s
       retries: 10
 
-    
-
   app:
     build: .
     container_name: echo_server

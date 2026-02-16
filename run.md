@@ -1,6 +1,8 @@
 use the following command to run the server:
 
-```bash$ go run cmd/run.go``` or ```bash$ go run main.go run```
+```
+bash$ go run main.go run
+```
 
 make sure to have the .env and config.yamlfile in the root directory with the following content:
 
