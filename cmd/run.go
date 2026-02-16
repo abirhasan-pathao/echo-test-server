@@ -4,6 +4,7 @@ import (
 	"context"
 	cookiedelivery "echo-server/app/cookie/delivery"
 	cookieusecase "echo-server/app/cookie/usecase"
+	"echo-server/app/middlewares"
 	"echo-server/app/students/delivery"
 	"echo-server/app/students/model"
 	"echo-server/app/students/repository"
@@ -51,12 +52,12 @@ var startServerCmd = &cobra.Command{
 			return c.JSON(http.StatusOK, "Server is Running...")
 		})
 
-		e.POST("/students", studentController.CreateStudent)
+		e.POST("/students", studentController.CreateStudent, middlewares.DummyAuthMiddleware)
 		e.GET("/students/:id", studentController.GetStudentByID)
-		e.GET("/students", studentController.GetAllStudents)
-		e.PUT("/students/:id", studentController.UpdateStudent)
-		e.DELETE("/students/:id", studentController.DeleteStudent)
-		e.GET("/students/average-age", studentController.GetAverageAge)
+		e.GET("/students", studentController.GetAllStudents, middlewares.DummyAuthMiddleware)
+		e.PUT("/students/:id", studentController.UpdateStudent, middlewares.DummyAuthMiddleware)
+		e.DELETE("/students/:id", studentController.DeleteStudent, middlewares.DummyAuthMiddleware)
+		e.GET("/students/average-age", studentController.GetAverageAge, middlewares.DummyAuthMiddleware)
 
 		e.GET("/cookie", cookieController.GetCookie)
 		e.GET("/milk", cookieController.GetMilk)
