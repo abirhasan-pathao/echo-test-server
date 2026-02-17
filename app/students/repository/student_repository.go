@@ -30,6 +30,7 @@ func (r *StudentRepository) GetStudentByID(id uint) (*model.Student, error) {
 
 func (r *StudentRepository) GetAllStudents() ([]model.Student, error) {
 	var students []model.Student
+	// err := r.db.Debug().Find(&students).Error
 	err := r.db.Find(&students).Error
 
 	return students, err
